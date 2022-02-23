@@ -1,0 +1,62 @@
+---
+title: "Homework 4"
+author: "Emma Staut"
+date: "2/21/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Github repository link: https://github.com/estaut/lab2.git
+
+# Question Set 1
+1. What is the overall number of chocolate bars rated?
+```{r}
+choco <- read.csv("https://ds202-at-isu.github.io/labs/data/choco.csv")
+head(choco)
+dim(choco)
+```
+There are 1852 chocolate bars rated in the data set. 
+
+2. How does the number of ratings depend on the year?
+```{r, warning=FALSE}
+library(tidyverse)
+library(ggplot2)
+choco %>% ggplot(aes(x=Review.Date)) + 
+  geom_bar(aes(weight=Rating)) + coord_flip()
+```
+Most chocolate bars were rated between 2014 and 2016 since they have the largest bars on the graph. 
+
+# Question Set 2
+1. How are ratings distributed?
+```{r}
+choco %>% ggplot(aes(x=Rating)) + geom_histogram()
+```
+The ratings are normally distributed, with most falling between 3 and 4 points out of 5. There are a few outliers between 1 and 2, with one chocolate bar rated a 5. There don't appear to be any other chocolate bars with a rating larger than 4. 
+
+2. Do ratings depend on the cocoa percentage of a chocolate bar?
+```{r}
+choco %>% ggplot(aes(x=Cocoa.Pct, y=Rating)) + geom_point() + geom_jitter()
+```
+There is a very weak negative correlation between cocoa percentage and ratings. The ratings generally decrease as the cocoa percentage increases, but even this is a generalization as each cocoa percentage has ratings ranging from 2 to 4.
+
+3. How do ratings compare across different company locations?
+```{r, warning=FALSE}
+top3 <- dplyr::filter(choco, Company.Location %in% c("U.S.A.", "France", "Canada"))
+top3 %>% ggplot(aes(y=Rating, Company.Location)) + geom_boxplot()
+```
+The average rating of 3.25 is the same across all three countries, but both Canada and USA have a higher range of ratings than France. Canada has a higher range of ratings in Q3 than both France and the USA, with Q3 ratings of 3.75, 3.5, and 3.5 respectively. Similary, the USA has a lower Q1 rating than Canada and France, with Q1 ratings of 2.75, 3.0, and 3.0 respectively. 
+
+# Questions to investigate
+
+Question: How do ratings depend on cocoa percentage for each of the top 3 company locations?
+```{r}
+top3 %>% ggplot(aes(x=Cocoa.Pct, y=Rating, color=Company.Location)) + geom_point() + geom_jitter()
+```
+As shown by the scatterplot and the boxplot above, Canada generally has the highest ratings of the three countries. There also appears to be a weak negative correlation between Rating and Cocoa Percentage for Canada, as its points drop in rating as cocoa.pct rises. We can also see that France has generally higher ratings, with most of its chocolate between 60-75%. There doesn't appear to be any correlation between rating and cocoa percentage for the USA, as all its points are scattered throughout the graph. 
+
+# Additional Questions
+1. Team members: Emma Staut (worked alone)
+2. I had an easy time working on the project, but ran into the most problems when graphing ratings across the top 3 company locations, as well as uploading the project to Github. I couldn't figure out how to best display the data, and I first thought I needed to display 3 separate histograms in a facet wrap. However, this didn't allow me to easily compare ratings across the three countries. I finally figured out that a box plot was the best way to display the data. I also had trouble setting up Github, since the Git tab had disappeared in my RStudio setup. After following another online tutorial, I was able to resolve that issue and get the code connected to the repository. 
